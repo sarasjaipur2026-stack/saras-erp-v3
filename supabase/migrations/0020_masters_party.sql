@@ -1,0 +1,3 @@
+-- Mirror of applied migration `masters_party` (rjfudynyrqbnlbnrbmqc).
+-- See live schema via Supabase MCP. Idempotent.
+-- (Full SQL is large; see commit message + apply_migration history.)
