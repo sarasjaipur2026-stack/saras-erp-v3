@@ -22,6 +22,8 @@ import { unitsConfig } from './modules/masters/configs/units'
 
 const LoginPage = lazy(() => import('./pages/LoginPage'))
 const DashboardPage = lazy(() => import('./modules/dashboard/DashboardPage'))
+const OrdersPage = lazy(() => import('./modules/orders/OrdersPage'))
+const StockPage = lazy(() => import('./modules/stock/StockPage'))
 
 function ShellGuarded(): JSX.Element {
   const { user, loading } = useAuth()
@@ -72,9 +74,9 @@ export const router = createBrowserRouter([
     element: <ShellGuarded />,
     children: [
       { path: '/', element: <DashboardPage /> },
-      { path: '/orders', element: <ComingSoon title="Orders" /> },
+      { path: '/orders', element: <OrdersPage /> },
       { path: '/pos', element: <ComingSoon title="POS" /> },
-      { path: '/stock', element: <ComingSoon title="Stock" /> },
+      { path: '/stock', element: <StockPage /> },
       { path: '/production', element: <ComingSoon title="Production" /> },
       { path: '/purchase', element: <ComingSoon title="Purchase" /> },
       { path: '/dispatch', element: <ComingSoon title="Dispatch" /> },
