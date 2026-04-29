@@ -14,6 +14,7 @@ import { useAuth } from './contexts/AuthContext'
 import { Shell } from './components/layout/Shell'
 
 const LoginPage = lazy(() => import('./pages/LoginPage'))
+const DashboardPage = lazy(() => import('./modules/dashboard/DashboardPage'))
 
 function ShellGuarded(): JSX.Element {
   const { user, loading } = useAuth()
@@ -107,7 +108,7 @@ export const router = createBrowserRouter([
   {
     element: <ShellGuarded />,
     children: [
-      { path: '/', element: <ComingSoon title="Dashboard" /> },
+      { path: '/', element: <DashboardPage /> },
       { path: '/orders', element: <ComingSoon title="Orders" /> },
       { path: '/pos', element: <ComingSoon title="POS" /> },
       { path: '/stock', element: <ComingSoon title="Stock" /> },

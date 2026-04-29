@@ -12,7 +12,9 @@
  * Env:  V2_URL, V2_SERVICE_KEY, V3_URL, V3_SERVICE_KEY
  */
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+
+type AnyClient = SupabaseClient<any, any, any, any, any>  // eslint-disable-line @typescript-eslint/no-explicit-any
 
 interface MigrationConfig {
   v2Url: string
@@ -40,7 +42,7 @@ function readEnv(): MigrationConfig {
 
 interface MigrationStep {
   name: string
-  run: (v2: ReturnType<typeof createClient>, v3: ReturnType<typeof createClient>) => Promise<void>
+  run: (v2: AnyClient, v3: AnyClient) => Promise<void>
 }
 
 /** Migration step registry — each phase appends its own step here. */
