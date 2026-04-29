@@ -1,17 +1,24 @@
 /**
- * Router — v3 route map.
+ * Router — v3 route map. Single persistent Shell parent route.
  *
- * Persistent <LayoutShell> parent route + child routes. Modules ship as
- * lazy chunks so the shell loads fast and modules code-split.
+ * Each module renders its own internal layout inside the Outlet:
+ *   - Analytical (Dashboard, Reports): single column.
+ *   - Transactional (Orders, Masters, etc): 3-panel via internal grid.
  *
- * Phase 0 ships placeholders for every module so the sidebar is fully
- * navigable from day 1; modules fill in per Phase 1-16.
+ * Per design Q4=C — strict 3-panel for transactional, flexible for analytical.
  */
 
 import { lazy, Suspense } from 'react'
 import { Navigate, Outlet, createBrowserRouter, Link } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
 import { Shell } from './components/layout/Shell'
+import { MasterPage } from './modules/masters/MasterPage'
+import { customersConfig } from './modules/masters/configs/customers'
+import { suppliersConfig } from './modules/masters/configs/suppliers'
+import { productsConfig } from './modules/masters/configs/products'
+import { hsnCodesConfig } from './modules/masters/configs/hsn-codes'
+import { warehousesConfig } from './modules/masters/configs/warehouses'
+import { unitsConfig } from './modules/masters/configs/units'
 
 const LoginPage = lazy(() => import('./pages/LoginPage'))
 const DashboardPage = lazy(() => import('./modules/dashboard/DashboardPage'))
@@ -28,60 +35,10 @@ function ShellGuarded(): JSX.Element {
   if (!user) return <Navigate to="/login" replace />
   return (
     <Shell>
-      <Shell.Rail>
-        <ComingSoonRail />
-      </Shell.Rail>
-      <Shell.Centre>
-        <Suspense fallback={<div className="p-6">Loading module…</div>}>
-          <Outlet />
-        </Suspense>
-      </Shell.Centre>
-      <Shell.Context>
-        <ContextPlaceholder />
-      </Shell.Context>
+      <Suspense fallback={<div className="p-6">Loading module…</div>}>
+        <Outlet />
+      </Suspense>
     </Shell>
-  )
-}
-
-function ComingSoonRail(): JSX.Element {
-  const items: { path: string; label: string }[] = [
-    { path: '/', label: 'Dashboard' },
-    { path: '/orders', label: 'Orders' },
-    { path: '/pos', label: 'POS' },
-    { path: '/stock', label: 'Stock' },
-    { path: '/production', label: 'Production' },
-    { path: '/purchase', label: 'Purchase' },
-    { path: '/dispatch', label: 'Dispatch' },
-    { path: '/invoices', label: 'Invoices' },
-    { path: '/payments', label: 'Payments' },
-    { path: '/quality', label: 'Quality' },
-    { path: '/jobwork', label: 'Jobwork' },
-    { path: '/calculator', label: 'Calculator' },
-    { path: '/reports', label: 'Reports' },
-    { path: '/masters', label: 'Masters' },
-    { path: '/notifications', label: 'Notifications' },
-    { path: '/settings', label: 'Settings' },
-  ]
-  return (
-    <nav className="p-2 space-y-0.5 text-sm">
-      {items.map((it) => (
-        <Link
-          key={it.path}
-          to={it.path}
-          className="block px-3 py-2 rounded-lg text-[color:var(--color-text-muted)] hover:bg-[color:var(--color-surface-sunken)] hover:text-[color:var(--color-text)]"
-        >
-          {it.label}
-        </Link>
-      ))}
-    </nav>
-  )
-}
-
-function ContextPlaceholder(): JSX.Element {
-  return (
-    <div className="p-4 text-xs text-[color:var(--color-text-faint)]">
-      Right-side context panel. Each module fills this with live state.
-    </div>
   )
 }
 
@@ -89,9 +46,15 @@ function ComingSoon({ title }: { title: string }): JSX.Element {
   return (
     <div className="p-8 max-w-xl">
       <h1 className="text-2xl font-bold text-[color:var(--color-text)] mb-2">{title}</h1>
-      <p className="text-sm text-[color:var(--color-text-muted)]">
+      <p className="text-sm text-[color:var(--color-text-muted)] mb-4">
         Coming soon — this module ships in a later phase.
       </p>
+      <Link
+        to="/"
+        className="text-sm text-[color:var(--color-accent)] hover:underline"
+      >
+        ← Back to dashboard
+      </Link>
     </div>
   )
 }
@@ -121,9 +84,16 @@ export const router = createBrowserRouter([
       { path: '/jobwork', element: <ComingSoon title="Jobwork" /> },
       { path: '/calculator', element: <ComingSoon title="Calculator" /> },
       { path: '/reports', element: <ComingSoon title="Reports" /> },
-      { path: '/masters', element: <ComingSoon title="Masters" /> },
       { path: '/notifications', element: <ComingSoon title="Notifications" /> },
       { path: '/settings', element: <ComingSoon title="Settings" /> },
+      // Masters — generic page driven by config
+      { path: '/masters', element: <Navigate to="/masters/customers" replace /> },
+      { path: '/masters/customers', element: <MasterPage config={customersConfig} /> },
+      { path: '/masters/suppliers', element: <MasterPage config={suppliersConfig} /> },
+      { path: '/masters/products', element: <MasterPage config={productsConfig} /> },
+      { path: '/masters/hsn-codes', element: <MasterPage config={hsnCodesConfig} /> },
+      { path: '/masters/warehouses', element: <MasterPage config={warehousesConfig} /> },
+      { path: '/masters/units', element: <MasterPage config={unitsConfig} /> },
     ],
   },
   { path: '*', element: <Navigate to="/" replace /> },
