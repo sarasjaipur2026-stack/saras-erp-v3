@@ -24,6 +24,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'))
 const DashboardPage = lazy(() => import('./modules/dashboard/DashboardPage'))
 const OrdersPage = lazy(() => import('./modules/orders/OrdersPage'))
 const StockPage = lazy(() => import('./modules/stock/StockPage'))
+const ProductionPage = lazy(() => import('./modules/production/ProductionPage'))
 
 function ShellGuarded(): JSX.Element {
   const { user, loading } = useAuth()
@@ -77,7 +78,7 @@ export const router = createBrowserRouter([
       { path: '/orders', element: <OrdersPage /> },
       { path: '/pos', element: <ComingSoon title="POS" /> },
       { path: '/stock', element: <StockPage /> },
-      { path: '/production', element: <ComingSoon title="Production" /> },
+      { path: '/production', element: <ProductionPage /> },
       { path: '/purchase', element: <ComingSoon title="Purchase" /> },
       { path: '/dispatch', element: <ComingSoon title="Dispatch" /> },
       { path: '/invoices', element: <ComingSoon title="Invoices" /> },
